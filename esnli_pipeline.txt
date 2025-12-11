@@ -1,0 +1,73 @@
+usage: (assume you are using task="ESNLI")
+
+download esnli dataset manually from https://github.com/OanaMariaCamburu/e-SNLI/tree/master/dataset
+
+and then place it at Research/dataset/esnli
+
+(I use ensli_train_1.csv and esnli_dev.csv and esnli_test.csv)
+(And rename them to ensli_train.csv, esnli_val.csv, esnli_test.csv)
+cd /media/vchd/新增磁碟區/Neil/Research/generate_baseline_rationales/prepare_baseline_rationale/ENSLI
+
+python template.py
+
+python paraphrase.py
+
+cd /media/vchd/新增磁碟區/Neil/Research/generate_data_for_ranking_metric
+
+bash ./run_generate_data_for_ranking_metric.sh ESNLI
+
+cd /media/vchd/新增磁碟區/Neil/Research/LAREV
+
+bash ./train.sh 0 temp ESNLI 8 3e-5 0 0
+
+bash ./train.sh 0 regular ESNLI 8 3e-5 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold_leaky t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 vacuous t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 leaky t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_80 t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_50 t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold_noise t5-large ESNLI 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 shuffled_gold t5-large ESNLI 0 0 0 0
+
+bash ./compute_ig.sh 0 ESNLI
+
+cd /media/vchd/新增磁碟區/Neil/Research/generate_multi_environments
+
+bash ./run_generate_multi_environments.sh ESNLI train
+
+cd /media/vchd/新增磁碟區/Neil/Research/LAREV
+
+bash ./train_leak_probe_model.sh 0 ESNLI 4 3e-5
+
+bash ./train_irm.sh 0 regular ESNLI 2 3e-5 0.5 6000 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold_leaky t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 vacuous t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 leaky t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_80 t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_50 t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold_noise t5-large ESNLI 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 shuffled_gold t5-large ESNLI 1 0.5 1 0.005
+
+
+
+
+
+

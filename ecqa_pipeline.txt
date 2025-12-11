@@ -1,0 +1,77 @@
+usage: (assume you are using task="ECQA")
+
+download ECQA dataset manually from https://github.com/dair-iitd/ECQA-Dataset/tree/main?tab=readme-ov-file
+
+and then place it at Research/dataset/ecqa
+
+cd /media/vchd/新增磁碟區/Neil/Research/dataset/cqa
+
+bash ./run_convert_cqa_from_huggingface_to_jsonl.sh
+
+cd /media/vchd/新增磁碟區/Neil/Research/dataset/ecqa/ECQA-Dataset
+
+bash ./run_generate_data.sh
+
+cd /media/vchd/新增磁碟區/Neil/Research/generate_baseline_rationales/prepare_baseline_rationale/ECQA/seq2seq_converter
+
+python construct_baseline_rationales.py
+
+cd /media/vchd/新增磁碟區/Neil/Research/generate_data_for_ranking_metric
+
+bash ./run_generate_data_for_ranking_metric.sh ECQA
+
+cd /media/vchd/新增磁碟區/Neil/Research/LAREV
+
+bash ./train.sh 0 temp ECQA 8 3e-5 0 0
+
+bash ./train.sh 0 regular ECQA 8 3e-5 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold_leaky t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 vacuous t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 leaky t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_80 t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_50 t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 gold_noise t5-large ECQA 0 0 0 0
+
+bash ./evaluate_ranking_data.sh 0 shuffled_gold t5-large ECQA 0 0 0 0
+
+bash ./compute_ig.sh 0 ECQA
+
+cd /media/vchd/新增磁碟區/Neil/Research/generate_multi_environments
+
+bash ./run_generate_multi_environments.sh ECQA train
+
+cd /media/vchd/新增磁碟區/Neil/Research/LAREV
+
+bash ./train_leak_probe_model.sh 0 ECQA 4 3e-5
+
+bash ./train_irm.sh 0 regular ECQA 2 3e-5 0.5 6000 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold_leaky t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 vacuous t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 leaky t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_80 t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 truncated_gold_50 t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 gold_noise t5-large ECQA 1 0.5 1 0.005
+
+bash ./evaluate_ranking_data.sh 0 shuffled_gold t5-large ECQA 1 0.5 1 0.005
+
+
+
+
+
+
